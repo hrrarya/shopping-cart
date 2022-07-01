@@ -2,13 +2,14 @@ import Badge from "@material-ui/core/Badge";
 import Drawer from "@material-ui/core/Drawer";
 import Grid from "@material-ui/core/Grid";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import { AddShoppingCart } from "@material-ui/icons";
+import { AddShoppingCart, ChevronRight } from "@material-ui/icons";
 import { useState } from "react";
 import { useQuery } from "react-query";
 import Item from "./Item/Item";
 // Styles
 import { Wrapper, StyledButton } from "./App.styles";
 import Cart from "./Cart/Cart";
+import IconButton from "@material-ui/core/IconButton";
 
 // types
 
@@ -35,8 +36,11 @@ const App = () => {
     getProducts
   );
 
-  const getTotalItems = (cartItems: CartItemType[]): any => {
-    cartItems.reduce((acc: number, item) => acc + item.amount, 0);
+  const isItemExists = (cart: CartItemType[], itemID: number): number => {
+    return cart.filter((item) => item.id === itemID).length;
+  };
+  const getTotalItems = (cartItems: CartItemType[]): number => {
+    return cartItems.length;
   };
   const handleAddToCart = (clickedItem: CartItemType) => {
     const cart = [...cartItems, clickedItem];
@@ -46,11 +50,16 @@ const App = () => {
 
   if (isLoading) return <LinearProgress />;
   if (error) return <div>Something went wrong</div>;
-  console.log(cartItems);
+
   return (
     <Wrapper>
-      <Drawer anchor="right" open={cartOpen} onClose={() => setCartOpen(false)}>
-        <Cart cartItems={cartItems} />
+      <Drawer
+        anchor="right"
+        open={cartOpen}
+        onClose={() => setCartOpen(false)}
+        variant="persistent"
+      >
+        <Cart cartItems={cartItems} setCartOpen={setCartOpen} />
       </Drawer>
       <StyledButton onClick={() => setCartOpen(true)}>
         <Badge

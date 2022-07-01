@@ -4,4 +4,9 @@ export const Wrapper = styled.div`
     font-family: Arial, Helvetica, sans-serif
     width: 500px;
     padding: 20px;
+
+    .total {
+        display: flex;
+        justify-content: space-between;
+    }
 `;
