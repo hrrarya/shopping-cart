@@ -31,21 +31,28 @@ const App = () => {
   const [cartOpen, setCartOpen] = useState(false);
   const [cartItems, setCartItems] = useState([] as CartItemType[]);
 
-  const { data, isLoading, error } = useQuery<CartItemType[]>(
+  const { data, isLoading, error, status } = useQuery<CartItemType[]>(
     "products",
     getProducts
   );
 
-  const isItemExists = (cart: CartItemType[], itemID: number): number => {
-    return cart.filter((item) => item.id === itemID).length;
-  };
   const getTotalItems = (cartItems: CartItemType[]): number => {
-    return cartItems.length;
+    return cartItems.reduce((acc, cur) => acc + cur.amount, 0);
   };
   const handleAddToCart = (clickedItem: CartItemType) => {
-    const cart = [...cartItems, clickedItem];
-    setCartItems(cart);
-  };
+    const isItemExists = cartItems.find((item) => item.id === clickedItem.id);
+
+    if (isItemExists) {
+      cartItems.map((item) =>
+        item.id === clickedItem.id ? item.amount++ : item.amount
+      );
+    } else {
+      clickedItem.amount = 1;
+      setCartItems([...cartItems, clickedItem]);
+    }
+
+    // console.log(cartItems);
+  };;
   const handleRemoveFromCart = () => null;
 
   if (isLoading) return <LinearProgress />;
@@ -59,7 +66,12 @@ const App = () => {
         onClose={() => setCartOpen(false)}
         variant="persistent"
       >
-        <Cart cartItems={cartItems} setCartOpen={setCartOpen} />
+        <Cart
+          cartItems={cartItems}
+          setCartOpen={setCartOpen}
+          setCartItems={setCartItems}
+          handleAddToCart={handleAddToCart}
+        />
       </Drawer>
       <StyledButton onClick={() => setCartOpen(true)}>
         <Badge
@@ -79,6 +91,6 @@ const App = () => {
       </Grid>
     </Wrapper>
   );
-};
+};;;;
 
 export default App;

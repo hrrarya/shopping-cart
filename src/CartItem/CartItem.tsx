@@ -13,6 +13,11 @@ const CartItem: React.FC<Props> = ({ item }) => (
         <p>Price: {item.price}</p>
         {/* <p>Total: {(item.amount * +item.price).toFixed(2)}</p> */}
       </div>
+      <div className="buttons">
+        <button>-</button>
+        <p>{item.amount}</p>
+        <button>+</button>
+      </div>
     </div>
   </Wrapper>
 );
