@@ -1,17 +1,24 @@
 import styled from "styled-components";
 import IconButton from "@material-ui/core/IconButton";
+import { makeStyles } from "@material-ui/core";
 
+export const useStyles = makeStyles({
+  paper: {
+    width: 400,
+  },
+  icon: {
+    fill: "#fff",
+  },
+  grid: {
+    marginTop: "70px",
+  },
+});
 export const Wrapper = styled.div`
-  margin: 40px;
+  margin: 15px 40px;
 
   & .muidrawer-paper: {
     width: 250px;
   }
 `;
 
-export const StyledButton = styled(IconButton)`
-  position: fixed;
-  z-index: 100;
-  right: 20px;
-  top: 20px;
-`;
+export const StyledButton = styled(IconButton)``;
