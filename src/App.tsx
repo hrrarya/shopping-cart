@@ -10,7 +10,8 @@ import Item from "./Item/Item";
 import { Wrapper, StyledButton } from "./App.styles";
 import Cart from "./Cart/Cart";
 import IconButton from "@material-ui/core/IconButton";
-
+import { product } from "./Api/product.data";
+import makeStyles from "@material-ui/styles/makeStyles";
 // types
 
 export type CartItemType = {
@@ -27,14 +28,22 @@ export type CartItemType = {
 const getProducts = async (): Promise<CartItemType[]> =>
   await (await fetch("https://fakestoreapi.com/products")).json();
 
+const useStyles = makeStyles({
+  paper: {
+    width: 400,
+  },
+});
 const App = () => {
+  const classes = useStyles();
   const [cartOpen, setCartOpen] = useState(false);
   const [cartItems, setCartItems] = useState([] as CartItemType[]);
 
-  const { data, isLoading, error, status } = useQuery<CartItemType[]>(
+  const { data, isLoading, error } = useQuery<CartItemType[]>(
     "products",
     getProducts
   );
+
+  // const data: CartItemType[] = product;
 
   const getTotalItems = (cartItems: CartItemType[]): number => {
     return cartItems.reduce((acc, cur) => acc + cur.amount, 0);
@@ -43,17 +52,40 @@ const App = () => {
     const isItemExists = cartItems.find((item) => item.id === clickedItem.id);
 
     if (isItemExists) {
-      cartItems.map((item) =>
-        item.id === clickedItem.id ? item.amount++ : item.amount
-      );
+      const modifiedCartItems = cartItems.map((item) => {
+        if (item.id === clickedItem.id) {
+          item.amount++;
+        }
+
+        return item;
+      });
+
+      setCartItems(modifiedCartItems);
     } else {
       clickedItem.amount = 1;
       setCartItems([...cartItems, clickedItem]);
     }
 
     // console.log(cartItems);
-  };;
-  const handleRemoveFromCart = () => null;
+  };
+  const handleRemoveFromCart = (clickedItem: CartItemType) => {
+    const isItemExists = cartItems.find((item) => item.id === clickedItem.id);
+    if (isItemExists && isItemExists.amount > 1) {
+      const modifiedCartItems = cartItems.filter((item) => {
+        if (item.id === clickedItem.id) {
+          item.amount--;
+        }
+        return item;
+      });
+      setCartItems(modifiedCartItems);
+    } else {
+      const modifiedCartItems = cartItems.filter(
+        (item) => item.id !== clickedItem.id
+      );
+
+      setCartItems(modifiedCartItems);
+    }
+  };
 
   if (isLoading) return <LinearProgress />;
   if (error) return <div>Something went wrong</div>;
@@ -64,13 +96,13 @@ const App = () => {
         anchor="right"
         open={cartOpen}
         onClose={() => setCartOpen(false)}
-        variant="persistent"
+        classes={{ paper: classes.paper }}
       >
         <Cart
           cartItems={cartItems}
           setCartOpen={setCartOpen}
-          setCartItems={setCartItems}
           handleAddToCart={handleAddToCart}
+          handleRemoveFromCart={handleRemoveFromCart}
         />
       </Drawer>
       <StyledButton onClick={() => setCartOpen(true)}>
@@ -91,6 +123,6 @@ const App = () => {
       </Grid>
     </Wrapper>
   );
-};;;;
+};;;;;;;;;
 
 export default App;

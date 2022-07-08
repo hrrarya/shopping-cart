@@ -8,15 +8,22 @@ import { ChevronRight } from "@material-ui/icons";
 type Props = {
   cartItems: CartItemType[];
   setCartOpen: any;
-  setCartItems: any;
   handleAddToCart: any;
+  handleRemoveFromCart: any;
 };
 
 const getTotalAmount = (cartItems: CartItemType[]): number => {
-  return +cartItems.reduce((acc, item) => acc + item.price, 0).toFixed(2);
+  return +cartItems
+    .reduce((acc, item) => acc + item.price * item.amount, 0)
+    .toFixed(2);
 };
 
-const Cart: React.FC<Props> = ({ cartItems, setCartOpen }) => (
+const Cart: React.FC<Props> = ({
+  cartItems,
+  setCartOpen,
+  handleAddToCart,
+  handleRemoveFromCart,
+}) => (
   <Wrapper>
     <IconButton onClick={() => setCartOpen(false)}>
       <ChevronRight />
@@ -26,7 +33,14 @@ const Cart: React.FC<Props> = ({ cartItems, setCartOpen }) => (
     {cartItems.length === 0 ? (
       <p>No item in cart</p>
     ) : (
-      cartItems.map((item, index) => <CartItem key={index} item={item} />)
+      cartItems.map((item, index) => (
+        <CartItem
+          key={index}
+          item={item}
+          handleAddToCart={handleAddToCart}
+          handleRemoveFromCart={handleRemoveFromCart}
+        />
+      ))
     )}
     <Divider />
     <div className="total">
