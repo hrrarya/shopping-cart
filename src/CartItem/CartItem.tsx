@@ -1,6 +1,8 @@
+import { Divider } from "@material-ui/core";
 import { Add, Delete } from "@material-ui/icons";
 import { CartItemType } from "../App";
-import { Wrapper } from "./CartItem.styles";
+import { Wrapper, useStyles } from "./CartItem.styles";
+import IconButton from "@material-ui/core/IconButton";
 
 type Props = {
   item: CartItemType;
@@ -12,25 +14,37 @@ const CartItem: React.FC<Props> = ({
   item,
   handleAddToCart,
   handleRemoveFromCart,
-}) => (
-  <Wrapper>
-    <div>
-      <h3>{item.title}</h3>
-      <div className="information">
-        <p>Price: {item.price}</p>
-        {/* <p>Total: {(item.amount * +item.price).toFixed(2)}</p> */}
+}) => {
+  const classes = useStyles();
+  return (
+    <Wrapper>
+      <div>
+        <h3>{item.title}</h3>
+        <div className="container">
+          <div className="information">
+            <p>Price: $ {item.price}</p>
+            {/* <p>Total: {(item.amount * +item.price).toFixed(2)}</p> */}
+          </div>
+          <div className="buttons">
+            <IconButton
+              onClick={() => handleRemoveFromCart(item)}
+              classes={{ root: classes.root }}
+            >
+              <Delete />
+            </IconButton>
+            <p>{item.amount}</p>
+            <IconButton
+              onClick={() => handleAddToCart(item)}
+              classes={{ root: classes.root }}
+            >
+              <Add />
+            </IconButton>
+          </div>
+        </div>
       </div>
-      <div className="buttons">
-        <button onClick={() => handleRemoveFromCart(item)}>
-          <Delete />
-        </button>
-        <p>{item.amount}</p>
-        <button onClick={() => handleAddToCart(item)}>
-          <Add />
-        </button>
-      </div>
-    </div>
-  </Wrapper>
-);
+      <Divider classes={{ root: classes.divider }} />
+    </Wrapper>
+  );
+};
 
 export default CartItem;
