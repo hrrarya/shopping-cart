@@ -5,6 +5,9 @@ import { makeStyles } from "@material-ui/core";
 export const useStyles = makeStyles({
   paper: {
     width: 400,
+    "@media (max-width: 487px)": {
+      width: 250,
+    },
   },
   icon: {
     fill: "#fff",
@@ -15,10 +18,6 @@ export const useStyles = makeStyles({
 });
 export const Wrapper = styled.div`
   margin: 15px 40px;
-
-  & .muidrawer-paper: {
-    width: 250px;
-  }
 `;
 
 export const StyledButton = styled(IconButton)``;
