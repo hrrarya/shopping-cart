@@ -1,16 +1,22 @@
 import Badge from "@material-ui/core/Badge";
 import Drawer from "@material-ui/core/Drawer";
+import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
 import Grid from "@material-ui/core/Grid";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import { AddShoppingCart } from "@material-ui/icons";
+import { AddShoppingCart, FilterList } from "@material-ui/icons";
+// import FilterAltOutlined from "@material-ui/icons/FilterAltOutlined";
+
+// FilterAltOutlined
+// import { FilterAltOutlinedIcon } from "@mui/icons-material";
 import { useState } from "react";
 import { useQuery } from "react-query";
 import Item from "./Item/Item";
 // Styles
-import { Wrapper, useStyles } from "./App.styles";
+import { Wrapper, useStyles, Puller } from "./App.styles";
 import Cart from "./Cart/Cart";
 import IconButton from "@material-ui/core/IconButton";
 import Nav from "./Nav/Nav";
+import { Typography } from "@material-ui/core";
 // types
 
 export type CartItemType = {
@@ -30,12 +36,17 @@ const getProducts = async (): Promise<CartItemType[]> =>
 const App = () => {
   const classes = useStyles();
   const [cartOpen, setCartOpen] = useState(false);
+  const [filterOpen, setFilterOpen] = useState(false);
   const [cartItems, setCartItems] = useState([] as CartItemType[]);
 
   const { data, isLoading, error } = useQuery<CartItemType[]>(
     "products",
     getProducts
   );
+
+  const iOS =
+    typeof navigator !== "undefined" &&
+    /iPad|iPhone|iPod/.test(navigator.userAgent);
 
   const getTotalItems = (cartItems: CartItemType[]): number => {
     return cartItems.reduce((acc, cur) => acc + cur.amount, 0);
@@ -98,15 +109,34 @@ const App = () => {
             handleRemoveFromCart={handleRemoveFromCart}
           />
         </Drawer>
-        <IconButton onClick={() => setCartOpen(true)}>
-          <Badge
-            badgeContent={getTotalItems(cartItems)}
-            color="error"
-            overlap="rectangular"
-          >
-            <AddShoppingCart classes={{ root: classes.icon }} />
-          </Badge>
-        </IconButton>
+        <SwipeableDrawer
+          anchor="top"
+          disableBackdropTransition={!iOS}
+          disableDiscovery={iOS}
+          open={filterOpen}
+          onClose={() => setFilterOpen(false)}
+          onOpen={() => setFilterOpen(true)}
+          classes={{ root: classes.filterBar }}
+        >
+          <Typography variant="h3" noWrap component="div" align="center">
+            Filter bar
+          </Typography>
+          <Puller />
+        </SwipeableDrawer>
+        <div className={classes.iconContainer}>
+          <IconButton onClick={() => setFilterOpen(true)}>
+            <FilterList classes={{ root: classes.icon }} />
+          </IconButton>
+          <IconButton onClick={() => setCartOpen(true)}>
+            <Badge
+              badgeContent={getTotalItems(cartItems)}
+              color="error"
+              overlap="rectangular"
+            >
+              <AddShoppingCart classes={{ root: classes.icon }} />
+            </Badge>
+          </IconButton>
+        </div>
       </Nav>
       <Wrapper>
         <Grid container spacing={3} classes={{ root: classes.grid }}>

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import IconButton from "@material-ui/core/IconButton";
-import { makeStyles } from "@material-ui/core";
+import { Box, makeStyles } from "@material-ui/core";
 
 export const useStyles = makeStyles({
   paper: {
@@ -15,9 +15,26 @@ export const useStyles = makeStyles({
   grid: {
     marginTop: "70px",
   },
+  iconContainer: {
+    display: "flex",
+    alignItems: "center",
+  },
+  filterBar: {},
 });
 export const Wrapper = styled.div`
   margin: 15px 40px;
+`;
+
+export const Puller = styled(Box)`
+  width: 250px;
+  height: 6px;
+  background-color: gray;
+  opacity: 0.7;
+  border-radius: 3px;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 `;
 
 export const StyledButton = styled(IconButton)``;
