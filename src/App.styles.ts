@@ -19,10 +19,26 @@ export const useStyles = makeStyles({
     display: "flex",
     alignItems: "center",
   },
-  filterBar: {},
+  filterBar: {
+    display: "flex",
+    justifyContent: "center",
+  },
+  form: {
+    margin: "50px 20px !important",
+  },
+  buttonBox: {
+    display: "flex",
+    "justify-content": "right",
+    "margin-top": "20px",
+  },
 });
 export const Wrapper = styled.div`
   margin: 15px 40px;
+`;
+
+export const NavWrapper = styled.div`
+  div.filter-box {
+  }
 `;
 
 export const Puller = styled(Box)`

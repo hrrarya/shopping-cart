@@ -8,15 +8,24 @@ import { AddShoppingCart, FilterList } from "@material-ui/icons";
 
 // FilterAltOutlined
 // import { FilterAltOutlinedIcon } from "@mui/icons-material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import Item from "./Item/Item";
 // Styles
-import { Wrapper, useStyles, Puller } from "./App.styles";
+import { Wrapper, useStyles, Puller, NavWrapper } from "./App.styles";
 import Cart from "./Cart/Cart";
 import IconButton from "@material-ui/core/IconButton";
 import Nav from "./Nav/Nav";
-import { Typography } from "@material-ui/core";
+import {
+  Box,
+  Button,
+  FormControl,
+  FormGroup,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@material-ui/core";
+import { _priceFilter } from "./Api/helper";
 // types
 
 export type CartItemType = {
@@ -29,20 +38,42 @@ export type CartItemType = {
   amount: number;
   rating: { rate: number; count: number };
 };
+const getProducts = async (options: any): Promise<CartItemType[]> => {
+  // const [_, priceFilter] = options.queryKey;
 
-const getProducts = async (): Promise<CartItemType[]> =>
-  await (await fetch("https://fakestoreapi.com/products")).json();
+  let data = await (await fetch("https://fakestoreapi.com/products")).json();
+
+  // if (priceFilter) {
+  //   data = _priceFilter(priceFilter, data);
+  // }
+
+  return data;
+};
 
 const App = () => {
   const classes = useStyles();
+
   const [cartOpen, setCartOpen] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
   const [cartItems, setCartItems] = useState([] as CartItemType[]);
 
+  // filter paramenters
+  const [priceFilter, setPriceFilter] = useState(null as string | null); // lth = low to high, htl= hight to low
+
   const { data, isLoading, error } = useQuery<CartItemType[]>(
-    "products",
-    getProducts
+    ["products"],
+    getProducts,
+    { enabled: "lth" !== priceFilter && "htl" !== priceFilter }
   );
+
+  const handleSubmit = (data: CartItemType[] | undefined) => {
+    if (data) {
+      setFilterOpen(false);
+      return _priceFilter(priceFilter, data);
+    }
+
+    return null;
+  };
 
   const iOS =
     typeof navigator !== "undefined" &&
@@ -94,7 +125,7 @@ const App = () => {
   if (error) return <div>Something went wrong</div>;
 
   return (
-    <>
+    <NavWrapper>
       <Nav>
         <Drawer
           anchor="right"
@@ -118,9 +149,32 @@ const App = () => {
           onOpen={() => setFilterOpen(true)}
           classes={{ root: classes.filterBar }}
         >
-          <Typography variant="h3" noWrap component="div" align="center">
-            Filter bar
-          </Typography>
+          <FormControl classes={{ root: classes.form }}>
+            <FormGroup>
+              <InputLabel id="bs-price-label">Price</InputLabel>
+              <Select
+                labelId="bs-price-label"
+                id="bs-price"
+                value={priceFilter || ""}
+                label="Price"
+                onChange={(event) =>
+                  setPriceFilter(event.target.value as string)
+                }
+              >
+                <MenuItem value={"lth"}>Low to High</MenuItem>
+                <MenuItem value={"htl"}>High to Low</MenuItem>
+              </Select>
+            </FormGroup>
+            <Box className={classes.buttonBox}>
+              <Button
+                type="submit"
+                variant="outlined"
+                onClick={() => handleSubmit(data)}
+              >
+                Apply
+              </Button>
+            </Box>
+          </FormControl>
           <Puller />
         </SwipeableDrawer>
         <div className={classes.iconContainer}>
@@ -140,14 +194,15 @@ const App = () => {
       </Nav>
       <Wrapper>
         <Grid container spacing={3} classes={{ root: classes.grid }}>
-          {data?.map((item: CartItemType) => (
-            <Grid item key={item.id} xs={12} sm={4}>
-              <Item item={item} handleAddToCart={handleAddToCart} />
-            </Grid>
-          ))}
+          {Array.isArray(data) &&
+            data?.map((item: CartItemType) => (
+              <Grid item key={item.id} xs={12} sm={4}>
+                <Item item={item} handleAddToCart={handleAddToCart} />
+              </Grid>
+            ))}
         </Grid>
       </Wrapper>
-    </>
+    </NavWrapper>
   );
 };
 
