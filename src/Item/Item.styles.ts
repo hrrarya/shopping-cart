@@ -1,4 +1,11 @@
+import { makeStyles } from "@material-ui/core";
 import styled from "styled-components";
+
+export const useStyles = makeStyles({
+  card: {
+    maxWidth: 345,
+  },
+});
 
 export const Wrapper = styled.div`
   display: flex;

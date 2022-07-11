@@ -6,6 +6,13 @@ const useStyles = makeStyles({
     justifyContent: "space-between",
     flexDirection: "row",
   },
+  logo: {
+    color: "#fff",
+    textDecoration: "none",
+    "&:hover": {
+      textDecoration: "none",
+    },
+  },
 });
 
 export { useStyles };

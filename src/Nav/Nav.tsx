@@ -1,4 +1,4 @@
-import { AppBar, Toolbar, Typography } from "@material-ui/core";
+import { AppBar, Link, Toolbar, Typography } from "@material-ui/core";
 import Box from "@material-ui/core/Box";
 import { useStyles } from "./Nav.styles";
 
@@ -12,14 +12,16 @@ const Nav: React.FC<Props> = ({ children }) => {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="fixed" classes={{ root: classes.appbar }}>
         <Toolbar>
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            //   sx={{ display: { xs: "none", sm: "block" } }}
-          >
-            Best Stores
-          </Typography>
+          <Link href="/" classes={{ root: classes.logo }}>
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              //   sx={{ display: { xs: "none", sm: "block" } }}
+            >
+              Best Stores
+            </Typography>
+          </Link>
         </Toolbar>
         {children}
       </AppBar>

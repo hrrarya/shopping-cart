@@ -1,6 +1,6 @@
 {
   "short_name": "Shopping Cart",
-  "name": "A simple shopping cart using React-TypeScript",
+  "name": "Best stores for shopping best products in your area",
   "icons": [
     {
       "src": "favicon.ico",

@@ -14,6 +14,7 @@ export const useStyles = makeStyles({
   },
   grid: {
     marginTop: "70px",
+    display: "flex",
   },
   iconContainer: {
     display: "flex",
